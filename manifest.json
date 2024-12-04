@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Purchase Advisor",
+  "description": "Gives personalized purchase advice based on your finances.",
+  "version": "1.0",
+  "permissions": [
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.amazon.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
