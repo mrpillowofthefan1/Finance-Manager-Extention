@@ -1,15 +1,51 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Purchase Advisor</title>
-    <style>
-      body { width: 200px; }
-      #recommendation { font-size: 16px; }
-    </style>
-  </head>
-  <body>
-    <h1>Recommendation</h1>
-    <p id="recommendation">Loading...</p>
-    <script src="../static/popup.js"></script>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plaid Login</title>
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+</head>
+<body>
+    <h1>Welcome! Link Your Bank Account</h1>
+    <button id="linkButton">Login with Plaid</button>
+
+    <script>
+        fetch('/api/create_link_token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const handler = Plaid.create({
+                token: data.link_token,
+                onSuccess: function (public_token, metadata) {
+                    window.location.replace('/popup');
+                },
+                onExit: function (err, metadata) {
+                    if (err) {
+                        console.error('Error in Plaid Link flow:', err);
+                        alert('An error occurred while linking your bank account.');
+                    }
+                }
+            });
+
+            document.getElementById('linkButton').addEventListener('click', () => {
+                handler.open();
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching link token:', error);
+            alert('Unable to fetch link token. Please check your backend.');
+        });
+    </script>
+</body>
 </html>

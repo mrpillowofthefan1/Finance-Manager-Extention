@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advisor Recommendation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+        #recommendation {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Financial Advisor Recommendation</h1>
+
+    <h2>Extracted Product Name:</h2>
+    <div id="extractedProduct">Loading...</div>
+
+    <h2>Recommendation:</h2>
+    <div id="recommendation">Your recommendation will appear here.</div>
+
+    <script>
+        window.onload = function() {
+            // Extract the product name from the span with id "productTitle"
+            var productNameElement = document.querySelector("span#productTitle");
+            var productName = productNameElement ? productNameElement.innerText.trim() : "Unknown Product";
+
+            // Display the extracted product name on the page
+            document.getElementById("extractedProduct").innerText = productName;
+
+            // Send the product name to the backend
+            fetch('/process_product_name', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ product_name: productName })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display the recommendation from the backend
+                document.getElementById('recommendation').innerText = data.recommendation;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('recommendation').innerText = "Sorry, something went wrong.";
+            });
+        };
+    </script>
+</body>
+</html>

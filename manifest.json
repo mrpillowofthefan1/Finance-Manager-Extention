@@ -1,21 +1,27 @@
 {
-  "manifest_version": 3,
-  "name": "Purchase Advisor",
-  "description": "Gives personalized purchase advice based on your finances.",
+  "manifest_version": 2,
+  "name": "Personal Finance Manager",
+  "description": "This will help you control your finances based on if the purchase is necessary or not.",
   "version": "1.0",
-  "permissions": [
-    "activeTab"
-  ],
-  "background": {
-    "service_worker": "background.js"
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.amazon.com/*"],
+      "matches": [
+        "*://*.amazon.com/*",
+        "*://*.ebay.com/*",
+        "*://*.walmart.com/*",
+        "*://*.bestbuy.com/*",
+        "*://*.target.com/*"
+      ],
       "js": ["content.js"]
     }
   ],
-  "action": {
-    "default_popup": "popup.html"
-  }
+  "permissions": ["activeTab", "storage", "tabs"],
+  "web_accessible_resources": [
+    "popup_advisor.html"
+  ]
 }
